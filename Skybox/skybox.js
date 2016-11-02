@@ -1,89 +1,9 @@
 "use strict";
 
-var gl;
-var textureFront, textureBack, textureLeft, textureRight, textureUp, textureDown;
-var program;
-var cubeMap;
+let gl;
+let program;
+let cubeMap;
 
-
-
-function configureTexture(front, back, left, right, up, down) {
-
-    gl.activeTexture( gl.TEXTURE0 );
-    textureFront = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureFront );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, front);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureFront );
-    gl.uniform1i(gl.getUniformLocation( program, "Front"), 0);
-
-
-    gl.activeTexture( gl.TEXTURE1 );
-    textureBack = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureBack );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, back);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureBack );
-    gl.uniform1i(gl.getUniformLocation( program, "Back"), 1);
-
-
-    gl.activeTexture( gl.TEXTURE2 );
-    textureLeft = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureLeft );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, left);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureLeft );
-    gl.uniform1i(gl.getUniformLocation( program, "Left"), 2);
-
-    gl.activeTexture( gl.TEXTURE3 );
-    textureRight = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureRight );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, right);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureRight );
-    gl.uniform1i(gl.getUniformLocation( program, "Right"), 3);
-
-    gl.activeTexture( gl.TEXTURE4 );
-    textureUp = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureUp );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, up);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureUp );
-    gl.uniform1i(gl.getUniformLocation( program, "Up"), 4);
-
-    gl.activeTexture( gl.TEXTURE5 );
-    textureDown = gl.createTexture();
-    gl.bindTexture( gl.TEXTURE_2D, textureDown );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, down);
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
-        gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.bindTexture( gl.TEXTURE_2D, textureDown );
-    gl.uniform1i(gl.getUniformLocation( program, "Down"), 5);
-
-}
 
 function configureCubeMap(right, left, up, down, front, back) {
 
@@ -107,17 +27,17 @@ function configureCubeMap(right, left, up, down, front, back) {
 
 
 window.onload = function init() {
-    var canvas = document.getElementById("gl-canvas");
+    let canvas = document.getElementById("gl-canvas");
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl) {
         alert("WebGL isn't available");
     }
 
     // Use this object to listen for key inputs
-    var keyboardState = new THREEx.KeyboardState();
+    let keyboardState = new THREEx.KeyboardState();
 
     // The camera object control's the position and orientation of the... camera
-    var camera = new Camera(keyboardState);
+    let camera = new Camera(keyboardState);
 
     //
     // Set up our models
@@ -127,8 +47,8 @@ window.onload = function init() {
     camera.setForwardDirection(vec3(0, 0, 1));
 
     //var Projection = ortho(-10, 10, -10, 10, -10, 10);
-    var Projection = perspective(60, canvas.width/canvas.height, 0.01, 1000);
-    var View = camera.getViewMatrix();
+    let Projection = perspective(60, canvas.width/canvas.height, 0.01, 1000);
+    let View = camera.getViewMatrix();
 
     // Generate our cylinder, a higher number will make the approximated cylinder
     // look like a real cylinder
