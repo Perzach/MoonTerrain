@@ -37,6 +37,22 @@
     right click: backward)
 </div>
 
+<img id="front" src="../Skybox/img/front.jpg"  hidden/>
+<img id="back"  src="../Skybox/img/back.jpg"   hidden/>
+<img id="right" src="../Skybox/img/left.jpg"   hidden/>
+<img id="left"  src="../Skybox/img/right.jpg"  hidden/>
+<img id="up"    src="../Skybox/img/up.jpg"     hidden/>
+<img id="down"  src="../Skybox/img/down.jpg"   hidden/>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="../Skybox/THREEx.KeyboardState.js"></script>
+<script type="text/javascript" src="../Skybox/camera.js"></script>
+<script type="text/javascript" src="../Skybox/geometryTools.js"></script>
+<script type="text/javascript" src="../Skybox/cubeGeometry.js"></script>
+<script type="text/javascript" src="../Skybox/skybox.js"></script>
+
 <script src="bower_components/three.js/build/three.js"></script>
 
 <script src="bower_components/three.js/examples/js/loaders/DDSLoader.js"></script>
@@ -76,8 +92,10 @@
         // we're going to draw a slightly different one.
 		attribute vec3 translate;
 		attribute float scale;
+		attribute  vec3 vTexCoord;
 
 		varying vec2 vUv;
+		varying vec3 fTexCoord;
 
 		void main() {
 
@@ -87,11 +105,15 @@
 
 			gl_Position = projectionMatrix * mvPosition;
 
+			fTexCoord = vTexCoord;
+
 		}
 
 
 
 </script>
+
+
 
 <script id="fshader" type="x-shader/x-fragment">
         // Other attributes and uniforms are supposed to be filled in by Three.js
@@ -99,9 +121,17 @@
 
            uniform vec3 color;
 
+        precision mediump float;
+
+        varying  vec3 fTexCoord;
+
+        uniform samplerCube texMap;
+
 		void main() {
 
-			gl_FragColor = vec4(color, 1.0);
+			// gl_FragColor = vec4(color, 1.0);
+            gl_FragColor = textureCube(texMap, fTexCoord);
+
 
 		}
 
