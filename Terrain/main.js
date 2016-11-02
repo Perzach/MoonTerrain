@@ -24,6 +24,8 @@ var worldMapMaxHeight = 1000;
 
 var clock = new THREE.Clock();
 
+var cubeMap;
+
 window.onload = function () {
     "use strict";
     init();
@@ -43,6 +45,8 @@ function init() {
     controls = new THREE.FirstPersonControls(camera);
     controls.movementSpeed = 1000;
     controls.lookSpeed = 0.1;
+
+    //initSkySphere();
 
     //
     // Lights
@@ -137,6 +141,27 @@ function init() {
 
 
     window.addEventListener('resize', onWindowResize, false);
+
+}
+
+
+function initSkySphere(){
+
+    var radius = 5;
+    var widthSegments = 16;
+    var heightSegments = 16;
+    var textureUrl = '../Skybox/img/space.jpg';
+
+    var tex = new THREE.TextureLoader().load(textureUrl);
+    var skySphereGeometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+
+    // Create our sun's material, making it a Phong material so it supports light.
+    var skySphereMaterial = new THREE.MeshPhongMaterial({ map: tex });
+    var skySphere = new THREE.Mesh(skySphereGeometry, skySphereMaterial);
+
+    scene.add(skySphere);
+
+    return skySphere;
 
 }
 
