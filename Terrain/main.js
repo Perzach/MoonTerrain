@@ -37,7 +37,7 @@ function init() {
 
     container = document.getElementById('container');
 
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 20000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1e7);
     camera.name = 'camera';
 
     scene = new THREE.Scene();
@@ -46,7 +46,7 @@ function init() {
     controls.movementSpeed = 1000;
     controls.lookSpeed = 0.1;
 
-    //initSkySphere();
+    setupSkySphere();
 
     //
     // Lights
@@ -145,19 +145,19 @@ function init() {
 }
 
 
-function initSkySphere(){
+function setupSkySphere(){
 
-    var radius = 5;
+    var radius = 500000;
     var widthSegments = 16;
     var heightSegments = 16;
-    var textureUrl = '../Skybox/img/space.jpg';
+    var spaceTexture = THREE.ImageUtils.loadTexture('textures/space.jpg');
 
-    var tex = new THREE.TextureLoader().load(textureUrl);
     var skySphereGeometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
 
     // Create our sun's material, making it a Phong material so it supports light.
-    var skySphereMaterial = new THREE.MeshPhongMaterial({ map: tex });
+    var skySphereMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture});
     var skySphere = new THREE.Mesh(skySphereGeometry, skySphereMaterial);
+    skySphere.material.side = THREE.DoubleSide;
 
     scene.add(skySphere);
 
