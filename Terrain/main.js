@@ -47,6 +47,9 @@ function init() {
     controls.lookSpeed = 0.1;
 
     setupSkySphere();
+    setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg');
+
+
 
     //
     // Lights
