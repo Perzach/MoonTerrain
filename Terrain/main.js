@@ -47,9 +47,23 @@ function init() {
     controls.lookSpeed = 0.1;
 
     setupSkySphere();
-    setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg');
 
+    // Create the sun
+    var sun = setUpPlanet(80000, 700000, 150000, -400000, 'textures/sun.jpg');
 
+    // create a point light and set it as a child of the sun
+    var pointLight = new THREE.PointLight(0xFFFFFF, 4);
+    sun.add(pointLight);
+
+    scene.add(sun);
+
+    // Create the earth and add to scene
+    var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg');
+    scene.add(earth);
+
+    // Create atmospheric white light
+    //var amb = new THREE.AmbientLight(0xFFFFFF);
+    //scene.add(amb);
 
     //
     // Lights

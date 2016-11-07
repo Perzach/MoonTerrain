@@ -10,14 +10,12 @@ function setUpPlanet(radius, xPos, yPos, zPos, texturePath){
 
     var planetGeometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
 
-    var planetMaterial = new THREE.MeshBasicMaterial({ map: planetTexture});
+    var planetMaterial = new THREE.MeshPhongMaterial({ map: planetTexture});
     var planet = new THREE.Mesh(planetGeometry, planetMaterial);
 
     planet.position.x = xPos;
     planet.position.y = yPos;
     planet.position.z = zPos;
-
-    scene.add(planet);
 
     return planet;
 
