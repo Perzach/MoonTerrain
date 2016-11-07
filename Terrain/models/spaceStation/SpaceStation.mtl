@@ -1,0 +1,12 @@
+# Blender MTL File: 'SpaceStation.blend'
+# Material Count: 1
+
+newmtl Stasjon_MAT
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.244681 0.244681 0.244681
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Eivind\\Documents\\Skule\\Semester 5\\DAT 155\\Exercises\\Oblig 4\\StasjonTexture.png
