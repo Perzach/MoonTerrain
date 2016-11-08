@@ -48,6 +48,8 @@ function init() {
 
     setupSkySphere();
 
+
+
     // Create the sun
     var sun = setUpPlanet(80000, 700000, 150000, -400000, 'textures/sun.jpg');
 
@@ -107,8 +109,9 @@ function init() {
     var objectMaterialLoader = new THREE.OBJMTLLoader();
 
     setupInstancedRocks(terrainMesh, objectMaterialLoader);
-
     setupTrees(terrainMesh, objectMaterialLoader);
+    // Base
+    setupBase(terrainMesh, objectMaterialLoader);
 
     //
     // Generate random positions for some number of boxes
