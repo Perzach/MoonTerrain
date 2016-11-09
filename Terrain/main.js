@@ -20,7 +20,7 @@ var heightMapWidth = 512, heightMapDepth = 512;
 
 var worldMapWidth = 100 * heightMapWidth;
 var worldMapDepth = 100 * heightMapDepth;
-var worldMapMaxHeight = 1000;
+var worldMapMaxHeight = 2500;
 
 var clock = new THREE.Clock();
 
@@ -237,25 +237,10 @@ function setupTerrain() {
     // We scale the geometry to avoid scaling the node, since scales propagate.
     heightMapGeometry.scale(worldMapWidth, worldMapMaxHeight, worldMapDepth);
 
-    var sandTexture = THREE.ImageUtils.loadTexture('textures/sand.jpg');
-    sandTexture.wrapS = THREE.RepeatWrapping;
-    sandTexture.wrapT = THREE.RepeatWrapping;
+    var surfaceTexture = THREE.ImageUtils.loadTexture('textures/moonGravel.jpg');
+    surfaceTexture.wrapS = THREE.RepeatWrapping;
+    surfaceTexture.wrapT = THREE.RepeatWrapping;
     //sandTexture.repeat.set(2, 2);
-
-    var grassTexture = THREE.ImageUtils.loadTexture('textures/Gras_01.png');
-    grassTexture.wrapS = THREE.RepeatWrapping;
-    grassTexture.wrapT = THREE.RepeatWrapping;
-    //grassTexture.repeat.set(Math.floor(worldMapWidth/5), Math.floor(worldMapWidth/5));
-
-    var rockTexture = THREE.ImageUtils.loadTexture('textures/rock.jpg');
-    rockTexture.wrapS = THREE.RepeatWrapping;
-    rockTexture.wrapT = THREE.RepeatWrapping;
-    //rockTexture.repeat.set(Math.floor(worldMapWidth/5), Math.floor(worldMapWidth/5));
-
-    var snowTexture = THREE.ImageUtils.loadTexture('textures/snow.jpg');
-    snowTexture.wrapS = THREE.RepeatWrapping;
-    snowTexture.wrapT = THREE.RepeatWrapping;
-    //snowTexture.repeat.set(Math.floor(worldMapWidth/5), Math.floor(worldMapWidth/5));
 
     var terrainMaterialImproved = new THREE.ShaderMaterial({
         // We are reusing vertex shader from MeshBasicMaterial
@@ -267,17 +252,14 @@ function setupTerrain() {
         uniforms: {
             'heightMap': { type: 't', value: heightMapTexture },
 
-            'seabed': { type: 't', value: sandTexture },
-            'grass': { type: 't', value: grassTexture },
-            'rock': { type: 't', value: rockTexture },
-            'snow': { type: 't', value: snowTexture },
+            'surface': { type: 't', value: surfaceTexture },
 
             'grassLevel': { type: 'f', value: 0.1 },
             'rockLevel': { type: 'f', value: 0.6 },
             'snowLevel': { type: 'f', value: 0.8 },
 
             // Scale the texture coordinates when coloring the terrain
-            'terrainTextureScale': { type: 'v2', value: new THREE.Vector2(200, 200) },
+            'terrainTextureScale': { type: 'v2', value: new THREE.Vector2(50, 50) },
 
             // This is a default offset (first two numbers), and repeat (last two values)
             // Just use the default values to avoid fiddling with the uv-numbers from the vertex-shader

@@ -134,10 +134,7 @@
 
         uniform sampler2D heightMap;
 
-        uniform sampler2D seabed;
-        uniform sampler2D grass;
-        uniform sampler2D rock;
-        uniform sampler2D snow;
+        uniform sampler2D surface;
 
         uniform vec2 terrainTextureScale;
 
@@ -153,9 +150,10 @@
             vec2 scaledUv = vUv * terrainTextureScale;
 
             vec3 finalColor = vec3(0.0, 0.0, 0.0);
-
+            finalColor = texture2D(surface, scaledUv).rgb;
+            /*
             if (height < grassLevel) {
-                finalColor = texture2D(seabed, scaledUv).rgb;
+                finalColor = texture2D(surface, scaledUv).rgb;
 
             } else if (height < rockLevel) {
                 finalColor = texture2D(grass, scaledUv).rgb;
@@ -164,7 +162,7 @@
             } else {
                 finalColor = texture2D(snow, scaledUv).rgb;
             }
-
+            */
 			gl_FragColor = vec4(finalColor, 1.0);
 
 		}
