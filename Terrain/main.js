@@ -54,7 +54,7 @@ function init() {
     // 
 
     // Create the sun
-    var sun = setUpPlanet(80000, 700000, 150000, -400000, 'textures/sun.jpg');
+    var sun = setUpPlanet(70000, 700000, 150000, -400000, 'textures/sun.jpg');
     scene.add(sun);
 
     // Create the earth and add to scene
@@ -67,8 +67,14 @@ function init() {
     //
 
     // create a point light and set it as a child of the sun
-    var pointLight = new THREE.PointLight(0xFFFFFF, 5);
+    var pointLight = new THREE.PointLight(0xFFFFFF, 4);
     sun.add(pointLight);
+
+    // Dragging light out from sun in order to make sun glow.
+    pointLight.position.x = pointLight.position.x - 300000;
+    pointLight.position.y = pointLight.position.y - 65000;
+    pointLight.position.z = pointLight.position.z + 200000;
+
 
     // Needed for materials using phong shading
     var ambientLight = new THREE.AmbientLight(new THREE.Color(0.4, 0.4, 0.4));
@@ -76,14 +82,6 @@ function init() {
     scene.add(ambientLight);
 
 
-
-    //var directionalLight = new THREE.DirectionalLight(new THREE.Color(1.0, 1.0, 1.0));
-    //directionalLight.name = 'sun';
-    //directionalLight.position.set(1, 10000, 0);
-    //directionalLight.rotateZ(45 *Math.PI/180);
-    //scene.add(directionalLight);
-
-    //scene.add(new THREE.DirectionalLightHelper(directionalLight, 10));
 
     //
     // Height map generation/extraction
