@@ -106,10 +106,11 @@ function init() {
     //
 
     // There are several other model loaders for other types, just look in Three.js' example folder.
+
     var objectMaterialLoader = new THREE.OBJMTLLoader();
 
-    setupInstancedRocks(terrainMesh, objectMaterialLoader);
-    setupTrees(terrainMesh, objectMaterialLoader);
+    //setupInstancedRocks(terrainMesh, objectMaterialLoader);
+    //setupTrees(terrainMesh, objectMaterialLoader);
     // Base
     setupBase(terrainMesh, objectMaterialLoader);
 
