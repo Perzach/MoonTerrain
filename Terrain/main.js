@@ -54,8 +54,9 @@ function init() {
     // 
 
     // Create the sun
-    var sun = setUpPlanet(70000, 700000, 150000, -400000, 'textures/sun.jpg');
+    var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg');
     scene.add(sun);
+
 
     // Create the earth and add to scene
     var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg');
@@ -67,13 +68,36 @@ function init() {
     //
 
     // create a point light and set it as a child of the sun
-    var pointLight = new THREE.PointLight(0xFFFFFF, 4);
+    // This light is only for making the sun glow.
+    var pointLight = new THREE.PointLight(0xFFFFFF, 2);
     sun.add(pointLight);
+
 
     // Dragging light out from sun in order to make sun glow.
     pointLight.position.x = pointLight.position.x - 300000;
     pointLight.position.y = pointLight.position.y - 65000;
     pointLight.position.z = pointLight.position.z + 200000;
+
+
+    // This is the light from the sun.
+    var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 3);
+
+    directionalLight.position.set(10000, 3500, -6000);
+
+    directionalLight.castShadow = true;
+    directionalLight.shadowDarkness = 0.5;
+
+    directionalLight.shadowMapWidth = 2048;
+    directionalLight.shadowMapHeight = 2048;
+    directionalLight.shadowBias = 0.0001;
+
+    directionalLight.shadowCameraRight = 10000;
+    directionalLight.shadowCameraLeft = -10000;
+    directionalLight.shadowCameraTop = 10000;
+    directionalLight.shadowCameraBottom = -10000;
+    directionalLight.shadowCameraFar = 25000;
+
+    scene.add(directionalLight);
 
 
     // Needed for materials using phong shading
@@ -128,6 +152,8 @@ function init() {
     renderer.setClearColor(0xbfd1e5);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
     composer = new THREE.EffectComposer(renderer);
 
@@ -238,7 +264,7 @@ function setupTerrain() {
     var surfaceTexture = THREE.ImageUtils.loadTexture('textures/moonGravel.jpg');
     surfaceTexture.wrapS = THREE.RepeatWrapping;
     surfaceTexture.wrapT = THREE.RepeatWrapping;
-    //sandTexture.repeat.set(2, 2);
+    surfaceTexture.repeat.set(50, 50);
 
     var terrainMaterialImproved = new THREE.ShaderMaterial({
         // We are reusing vertex shader from MeshBasicMaterial
@@ -269,9 +295,21 @@ function setupTerrain() {
 
     });
 
-    var terrainMesh = new HeightMapMesh(heightMapGeometry, terrainMaterialImproved);
+    var terrainWorking = new THREE.MeshPhongMaterial({
+        map: surfaceTexture,
+        color: 0x888888,
+        shininess: 0.1
+    });
+
+
+    var terrainMesh = new HeightMapMesh(heightMapGeometry, terrainWorking);
     terrainMesh.name = "terrain";
+    terrainMesh.receiveShadow = true;
+    terrainMesh.castShadow = true;
+
     scene.add(terrainMesh);
+
+
 
     return terrainMesh;
 }

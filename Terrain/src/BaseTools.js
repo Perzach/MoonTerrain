@@ -23,6 +23,15 @@ function setupBase(terrain, objectMaterialLoader) {
 
             object.name = "Base";
 
+            //object.castShadow = true;
+            //object.receiveShadow = true;
+
+            object.traverse( function (node) {
+                if(node instanceof THREE.Mesh){
+                    node.castShadow = true;
+                }
+            });
+
             terrain.add(object);
         }, onProgress, onError);
 }
