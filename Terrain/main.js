@@ -43,15 +43,16 @@ function init() {
     scene = new THREE.Scene();
 
     controls = new THREE.FirstPersonControls(camera);
-    controls.movementSpeed = 1000;
-    controls.lookSpeed = 0.1;
+    controls.movementSpeed = 1500;
+    controls.lookSpeed = 0.2;
 
     setupSkySphere();
 
 
 
     //
-    // 
+    // Planets
+    //
 
     // Create the sun
     var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg');
@@ -72,7 +73,6 @@ function init() {
     var pointLight = new THREE.PointLight(0xFFFFFF, 2);
     sun.add(pointLight);
 
-
     // Dragging light out from sun in order to make sun glow.
     pointLight.position.x = pointLight.position.x - 300000;
     pointLight.position.y = pointLight.position.y - 65000;
@@ -80,17 +80,15 @@ function init() {
 
 
     // This is the light from the sun.
-    var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 3);
+    var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 2);
 
+    // Setup for position and shadows.
     directionalLight.position.set(10000, 3500, -6000);
-
     directionalLight.castShadow = true;
     directionalLight.shadowDarkness = 0.5;
-
     directionalLight.shadowMapWidth = 2048;
     directionalLight.shadowMapHeight = 2048;
     directionalLight.shadowBias = 0.0001;
-
     directionalLight.shadowCameraRight = 10000;
     directionalLight.shadowCameraLeft = -10000;
     directionalLight.shadowCameraTop = 10000;
@@ -118,7 +116,7 @@ function init() {
     //
 
     //camera.position.y = terrainMesh.getHeightAtPoint(camera.position) + 500;
-    camera.position.set(-worldMapWidth/5, 2*worldMapMaxHeight, 0);
+    camera.position.set(-worldMapWidth/10, 0.5*worldMapMaxHeight, 0);
     //camera.lookAt(new THREE.Vector3(0,0,0));
 
 
@@ -266,50 +264,19 @@ function setupTerrain() {
     surfaceTexture.wrapT = THREE.RepeatWrapping;
     surfaceTexture.repeat.set(50, 50);
 
-    var terrainMaterialImproved = new THREE.ShaderMaterial({
-        // We are reusing vertex shader from MeshBasicMaterial
 
-        defines: {
-            'USE_MAP': true
-        },
-
-        uniforms: {
-            'heightMap': { type: 't', value: heightMapTexture },
-
-            'surface': { type: 't', value: surfaceTexture },
-
-            'grassLevel': { type: 'f', value: 0.1 },
-            'rockLevel': { type: 'f', value: 0.6 },
-            'snowLevel': { type: 'f', value: 0.8 },
-
-            // Scale the texture coordinates when coloring the terrain
-            'terrainTextureScale': { type: 'v2', value: new THREE.Vector2(50, 50) },
-
-            // This is a default offset (first two numbers), and repeat (last two values)
-            // Just use the default values to avoid fiddling with the uv-numbers from the vertex-shader
-            'offsetRepeat': { type: 'v4', value: new THREE.Vector4(0, 0, 1, 1) }
-        },
-
-        vertexShader: THREE.ShaderLib['basic'].vertexShader,
-        fragmentShader: document.getElementById('terrain-fshader').textContent,
-
-    });
-
-    var terrainWorking = new THREE.MeshPhongMaterial({
+    var terrainWorkingMaterial = new THREE.MeshPhongMaterial({
         map: surfaceTexture,
         color: 0x888888,
         shininess: 0.1
     });
 
 
-    var terrainMesh = new HeightMapMesh(heightMapGeometry, terrainWorking);
+    var terrainMesh = new HeightMapMesh(heightMapGeometry, terrainWorkingMaterial);
     terrainMesh.name = "terrain";
     terrainMesh.receiveShadow = true;
     terrainMesh.castShadow = true;
-
     scene.add(terrainMesh);
-
-
 
     return terrainMesh;
 }

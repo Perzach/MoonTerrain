@@ -23,9 +23,7 @@ function setupBase(terrain, objectMaterialLoader) {
 
             object.name = "Base";
 
-            //object.castShadow = true;
-            //object.receiveShadow = true;
-
+            // Setting up shadows for object
             object.traverse( function (node) {
                 if(node instanceof THREE.Mesh){
                     node.castShadow = true;
