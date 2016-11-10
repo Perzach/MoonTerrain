@@ -55,12 +55,16 @@ function init() {
     //
 
     // Create the sun
-    var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg');
-    scene.add(sun);
+    var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg', "Sun");
+    var sunNode = new THREE.Object3D();
+    sunNode.name = "SunNode";
+    scene.add(sunNode);
+
+    sunNode.add(sun);
 
 
     // Create the earth and add to scene
-    var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg');
+    var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg', "Earth");
     scene.add(earth);
 
 
@@ -81,6 +85,8 @@ function init() {
 
     // This is the light from the sun.
     var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 2);
+    var sunLightNode = new THREE.Object3D();
+    sunLightNode.name = "SunLightNode";
 
     // Setup for position and shadows.
     directionalLight.position.set(10000, 3500, -6000);
@@ -95,7 +101,8 @@ function init() {
     directionalLight.shadowCameraBottom = -10000;
     directionalLight.shadowCameraFar = 25000;
 
-    scene.add(directionalLight);
+    scene.add(sunLightNode);
+    sunLightNode.add(directionalLight);
 
 
     // Needed for materials using phong shading
@@ -132,8 +139,9 @@ function init() {
 
     //setupInstancedRocks(terrainMesh, objectMaterialLoader);
     //setupTrees(terrainMesh, objectMaterialLoader);
+
     // Base
-    setupBase(terrainMesh, objectMaterialLoader);
+    setupWholeBase(terrainMesh, objectMaterialLoader);
 
     //
     // Generate random positions for some number of boxes
@@ -207,6 +215,12 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Perform state updates here
+    var axis = new THREE.Vector3(0.0, 1.0, 0);
+    var rotSpeed = 0.001;
+    scene.getChildByName("Earth").rotateOnAxis(axis , rotSpeed);
+    scene.getChildByName("Sky").rotateOnAxis(axis , rotSpeed);
+    scene.getChildByName("SunNode").rotateOnAxis(axis , rotSpeed);
+    scene.getChildByName("SunLightNode").rotateOnAxis(axis , rotSpeed);
 
     // Call render
     render();

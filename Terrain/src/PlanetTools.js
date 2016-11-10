@@ -2,7 +2,7 @@
  * Created by per-oystein on 07.11.2016.
  */
 
-function setUpPlanet(radius, xPos, yPos, zPos, texturePath){
+function setUpPlanet(radius, xPos, yPos, zPos, texturePath, name){
 
     var widthSegments = 32;
     var heightSegments = 32;
@@ -16,6 +16,8 @@ function setUpPlanet(radius, xPos, yPos, zPos, texturePath){
     planet.position.x = xPos;
     planet.position.y = yPos;
     planet.position.z = zPos;
+
+    planet.name = name;
 
     return planet;
 
