@@ -41,6 +41,7 @@ function init() {
     camera.name = 'camera';
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xcbcdcf, 0, 2000000);
 
     controls = new THREE.FirstPersonControls(camera);
     controls.movementSpeed = 1500;
