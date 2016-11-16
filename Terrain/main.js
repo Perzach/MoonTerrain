@@ -55,7 +55,7 @@ function init() {
     //
 
     // Create the sun
-    var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg', "Sun");
+    var sun = setUpPlanet(70000, 700000, 180000, -400000, 'textures/sun.jpg', 'textures/sunBump.jpg', "Sun");
     var sunNode = new THREE.Object3D();
     sunNode.name = "SunNode";
     scene.add(sunNode);
@@ -64,7 +64,7 @@ function init() {
 
 
     // Create the earth and add to scene
-    var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg', "Earth");
+    var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg', 'textures/earthBump.jpg', "Earth");
     scene.add(earth);
 
 
