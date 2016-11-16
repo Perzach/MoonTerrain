@@ -68,6 +68,10 @@ function init() {
     var earth = setUpPlanet(80000, 200000, 10000, 65000, 'textures/earth.jpg', 'textures/earthBump.jpg', "Earth");
     scene.add(earth);
 
+    // WATER
+    var water = setUpWater('textures/water.png');
+    scene.add(water);
+
 
     //
     // Lights
