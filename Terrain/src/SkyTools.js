@@ -14,7 +14,7 @@ function setupSkySphere(){
 
     var skySphereMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture});
     var skySphere = new THREE.Mesh(skySphereGeometry, skySphereMaterial);
-    skySphere.material.side = THREE.DoubleSide;
+    skySphere.material.side = THREE.BackSide;
 
     skySphere.name = "Sky";
 
