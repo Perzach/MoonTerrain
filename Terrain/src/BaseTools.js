@@ -33,6 +33,8 @@ function setupBase(terrain, objectMaterialLoader) {
             object.traverse( function (node) {
                 if(node instanceof THREE.Mesh){
                     node.castShadow = true;
+                    node.receiveShadow = true;
+
                 }
             });
 
@@ -62,6 +64,7 @@ function setupRocket(terrain, objectMaterialLoader) {
             object.traverse( function (node) {
                 if(node instanceof THREE.Mesh){
                     node.castShadow = true;
+                    node.receiveShadow = true;
                 }
             });
 
