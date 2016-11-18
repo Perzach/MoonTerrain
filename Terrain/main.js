@@ -12,6 +12,8 @@ var container, stats;
 
 var camera, controls, scene, renderer;
 
+var helmetObj;
+
 var terrainMesh;
 
 var composer;
@@ -40,6 +42,9 @@ function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1e7);
     camera.name = 'camera';
 
+
+
+
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0xcbcdcf, 0, 2000000);
 
@@ -48,6 +53,8 @@ function init() {
     controls.lookSpeed = 0.2;
 
     setupSkySphere();
+
+
 
 
 
@@ -71,6 +78,10 @@ function init() {
     // WATER
     var water = setUpWater('textures/water.png');
     scene.add(water);
+
+    //Helmet
+    helmetObj = setUpHelmet();
+    scene.add(helmetObj);
 
 
     //
@@ -166,6 +177,9 @@ function init() {
     renderer.shadowMapEnabled = true;
     renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
+    // Transparency-problem is solved in this line
+    renderer.sortObjects = false;
+
     composer = new THREE.EffectComposer(renderer);
 
     var renderPass = new THREE.RenderPass(scene, camera);
@@ -213,8 +227,7 @@ function onWindowResize() {
 
 
 
-//
-
+// Animate
 function animate() {
     "use strict";
     requestAnimationFrame(animate);
@@ -227,14 +240,28 @@ function animate() {
     scene.getChildByName("SunNode").rotateOnAxis(axis , rotSpeed);
     scene.getChildByName("SunLightNode").rotateOnAxis(axis , rotSpeed);
 
+    // Place helmet on camera
+    helmetObj.position.set(camera.position.x, camera.position.y, camera.position.z);
+
     // Call render
     render();
     stats.update();
 }
 
+// Takes input for toggeling the helmet on and off
+function handleKeyDown(event) {
+    if (event.keyCode === 72) { //72 is "h"
+        toggleHelmet(helmetObj);
+    }
+}
+window.addEventListener('keydown', handleKeyDown, false);
+
+
+// Render
 function render() {
     "use strict";
     controls.update(clock.getDelta());
+
     renderer.clear();
     //renderer.render(scene, camera);
     composer.render();

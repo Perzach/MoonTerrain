@@ -8,13 +8,13 @@ function setUpWater(texturePath) {
     texture = THREE.ImageUtils.loadTexture(texturePath);
 
     material = new THREE.MeshLambertMaterial({
+        transparent: true,
+        opacity: 3.0,
         map: texture,
-
     });
     water = new THREE.Mesh(new THREE.PlaneGeometry(550, 630), material);
     water.material.side = THREE.DoubleSide;
     water.receiveShadow = true;
-
 
     water.position.x = 1350;
     water.position.y = 110;
