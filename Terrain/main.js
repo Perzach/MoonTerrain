@@ -138,10 +138,12 @@ function init() {
     // Some other updates
     //
 
+
+
+
     //camera.position.y = terrainMesh.getHeightAtPoint(camera.position) + 500;
     camera.position.set(-worldMapWidth/10, 0.5*worldMapMaxHeight, 0);
     //camera.lookAt(new THREE.Vector3(0,0,0));
-
 
 
     //
@@ -156,6 +158,9 @@ function init() {
 
     // Base
     setupWholeBase(terrainMesh, objectMaterialLoader);
+
+    // Rocks
+    //setupInstancedRocks(terrainMesh, objectMaterialLoader);
 
     //
     // Generate random positions for some number of boxes
@@ -256,6 +261,148 @@ function render() {
     renderer.clear();
     //renderer.render(scene, camera);
     composer.render();
+}
+
+
+
+function setupInstancedRocks(terrain, objectMaterialLoader) {
+    "use strict";
+    var maxNumObjects = 2000;
+    var spreadCenter = new THREE.Vector3(0.1*worldMapWidth, 0, 0.2*worldMapDepth);
+    var spreadRadius = 0.2*worldMapWidth;
+    //var geometryScale = 30;
+
+    var minHeight = 0.2*worldMapMaxHeight;
+    var maxHeight = 0.6*worldMapMaxHeight;
+    var maxAngle = 30 * Math.PI / 180;
+
+    var scaleMean = 50;
+    var scaleSpread = 20;
+    var scaleMinimum = 1;
+
+    var generatedAndValidPositions = generateRandomData(maxNumObjects,
+        //generateGaussPositionAndCorrectHeight.bind(null, terrain, spreadCenter, spreadRadius),
+        // The previous is functionally the same as
+        function() {
+            return generateGaussPositionAndCorrectHeight(terrain, spreadCenter, spreadRadius)
+        },
+
+        // If you want to accept every position just make function that returns true
+        positionValidator.bind(null, terrain, minHeight, maxHeight, maxAngle)
+    );
+    var translationArray = makeFloat32Array(generatedAndValidPositions);
+
+    var generatedAndValidScales = generateRandomData(generatedAndValidPositions.length,
+
+        // Generator function
+        function() { return Math.abs(scaleMean + randomGauss()*scaleSpread); },
+
+        // Validator function
+        function(scale) { return scale > scaleMinimum; }
+    );
+    var scaleArray = makeFloat32Array(generatedAndValidScales);
+
+    // Lots of other possibilities, eg: custom color per object, objects changing (requires dynamic
+    // InstancedBufferAttribute, see its setDynamic), but require more shader magic.
+    var translationAttribute = new THREE.InstancedBufferAttribute(translationArray, 3, 1);
+    var scaleAttribute = new THREE.InstancedBufferAttribute(scaleArray, 1, 1);
+
+    var instancedMaterial = new THREE.ShaderMaterial({
+        uniforms: THREE.UniformsUtils.merge(
+            //THREE.UniformsLib['lights'],
+            {
+                color: {type: "c", value: new THREE.Color(Math.random(), Math.random(), Math.random())}
+            }
+        ),
+        vertexShader: document.getElementById("instanced-vshader").textContent,
+        fragmentShader: THREE.ShaderLib['basic'].fragmentShader,
+
+        //lights: true
+    });
+
+    objectMaterialLoader.load(
+        'models/rocks/rock1/Rock1.obj',
+        'models/rocks/rock1/Rock1.mtl',
+        function (loadedObject) {
+            "use strict";
+            // Custom function to handle what's supposed to happen once we've loaded the model
+
+            // Extract interesting object (or modify the model in a 3d program)
+            var object = loadedObject.children[1].clone();
+
+            // Traverse the model objects and replace their geometry with an instanced copy
+            // Each child in the geometry with a custom color(, and so forth) will be drawn with a
+            object.traverse(function(node) {
+                if (node instanceof THREE.Mesh) {
+                    console.log('mesh', node);
+
+                    var oldGeometry = node.geometry;
+
+                    node.geometry = new THREE.InstancedBufferGeometry();
+
+                    // Copy the the prevoius geometry
+                    node.geometry.fromGeometry(oldGeometry);
+
+                    // Associate our generated values with named attributes.
+                    node.geometry.addAttribute("translate", translationAttribute);
+                    node.geometry.addAttribute("scale", scaleAttribute);
+
+                    //node.geometry.scale(geometryScale, geometryScale, geometryScale);
+
+                    // A hack to avoid custom making a boundary box
+                    node.frustumCulled = false;
+
+                    // Set up correct material. We must replace whatever has been set with a fitting material
+                    // that can be used for instancing.
+                    var oldMaterial = node.material;
+                    console.log('material', oldMaterial);
+
+                    node.material = instancedMaterial.clone();
+                    if ("color" in oldMaterial) {
+                        node.material.uniforms['diffuse'] = {
+                            type: 'c',
+                            value: oldMaterial.color
+                        };
+                    }
+                }
+            });
+
+            var bbox = new THREE.Box3().setFromObject(object);
+
+            // We should know where the bottom of our object is
+            object.position.y -= bbox.min.y;
+
+            object.name = "RockInstanced";
+
+            terrain.add(object);
+        }, onProgress, onError);
+}
+
+
+function generateGaussPositionAndCorrectHeight(terrain, center, radius) {
+    "use strict";
+    var pos = randomGaussPositionMaker(center, radius);
+    //var pos = randomUniformPositionMaker(center, radius);
+    return terrain.computePositionAtPoint(pos);
+}
+
+function positionValidator(terrain, minHeight, maxHeight, maxAngle, candidatePos) {
+    "use strict";
+
+    var normal = terrain.computeNormalAtPoint(candidatePos);
+    var notTooSteep = true;
+
+    var angle = normal.angleTo(new THREE.Vector3(0, 1, 0));
+    //var maxAngle = 30 * Math.PI/180;
+
+    if (angle > maxAngle) {
+        notTooSteep = false;
+    }
+
+    var withinTerrainBoundaries = terrain.withinBoundaries(candidatePos);
+    var withinHeight = (candidatePos.y >= minHeight) && (candidatePos.y <= maxHeight);
+
+    return withinTerrainBoundaries && withinHeight && notTooSteep;
 }
 
 
